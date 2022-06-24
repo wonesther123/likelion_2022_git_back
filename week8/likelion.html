@@ -1,0 +1,21 @@
+import requests
+import pandas as pd
+from bs4 import BeautifulSoup
+import bs4
+import json
+
+key = 'a8e597633acca03091ad5fba598b58a7'
+url = "http://kobis.or.kr/kobisopenapi/webservice/rest/movie/searchMovieList.json?key="
+parameter = {"directorNm": "봉준호"}
+req = requests.get(url, parameter)
+
+html= req.json()
+html
+DF = pd.DataFrame(html['movieListResult']["movieList"])
+
+DF = DF.sort_values("prdtYear")
+
+DF['directors'] = DF['directors'].apply(lambda x : x[0]['peopleNm'])
+DF['companys'] = DF['companys'].apply(lambda x : x[0]['companyNm'] if x else x)
+
+DF
